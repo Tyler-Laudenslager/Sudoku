@@ -1,5 +1,7 @@
 import copy
 import sys
+import sudoku_games
+import random
 
 class Sudoku_Board:
 
@@ -138,9 +140,9 @@ class Sudoku_Board:
                 row_number = 0
                 print("|-----------------------|")
         
-    def insert_number(self,x,y,number):
-        if self.possible(x,y,number):
-            self._grid[x][y] = number
+    def insert_number(self,y,x,number):
+        if self.possible(y,x,number):
+            self._grid[y][x] = number
             return
         else:
             print("Error: Cannot place number in grid")
@@ -158,38 +160,6 @@ class Sudoku_Board:
 # End of class definition #
 # -------------------------------------------
 # Make easy sudoku puzzle board
-        
-def build_easy_sudoku_board():
-    sudoku_board = Sudoku_Board()
-    sudoku_board.insert_number(0,1,8)
-    sudoku_board.insert_number(0,6,2)
-    sudoku_board.insert_number(1,7,9)
-    sudoku_board.insert_number(1,5,4)
-    sudoku_board.insert_number(1,4,8)
-    sudoku_board.insert_number(2,2,6)
-    sudoku_board.insert_number(2,3,3)
-    sudoku_board.insert_number(2,4,2)
-    sudoku_board.insert_number(2,7,1)
-    sudoku_board.insert_number(3,1,9)
-    sudoku_board.insert_number(3,2,7)
-    sudoku_board.insert_number(3,7,8)
-    sudoku_board.insert_number(4,0,8)
-    sudoku_board.insert_number(4,3,9)
-    sudoku_board.insert_number(4,5,3)
-    sudoku_board.insert_number(4,8,2)
-    sudoku_board.insert_number(5,1,1)
-    sudoku_board.insert_number(5,6,9)
-    sudoku_board.insert_number(5,7,5)
-    sudoku_board.insert_number(6,1,7)
-    sudoku_board.insert_number(6,4,4)
-    sudoku_board.insert_number(6,5,5)
-    sudoku_board.insert_number(6,6,8)
-    sudoku_board.insert_number(7,1,3)
-    sudoku_board.insert_number(7,3,7)
-    sudoku_board.insert_number(7,4,1)
-    sudoku_board.insert_number(8,2,8)
-    sudoku_board.insert_number(8,7,4)
-    return sudoku_board
 
 def splash_screen():
     print("""
@@ -207,10 +177,10 @@ the matrix.
 def action_menu(puzzle):
     while True:
         try:
-            x,y,number = [int(x) for x in input("Enter x,y,number: ").split(",")]
+            y,x,number = [int(x) for x in input("Enter y,x,number: ").split(",")]
             if x == 0 or y == 0 or number == 0:
                 raise ValueError
-            puzzle.insert_number(x-1,y-1,number)
+            puzzle.insert_number(y-1,x-1,number)
             return
         except ValueError:
             print("Invalid Value\nx -> 1-9\ny -> 1-9\nnumber -> 1-9")
@@ -224,24 +194,31 @@ def action_menu(puzzle):
 
 def puzzle():
     splash_screen()
-    sudoku_puzzle = build_easy_sudoku_board()
+    sudoku_puzzle = build_sudoku_board(random.choice(sudoku_games.boards))
     sudoku_puzzle.print()
     while not sudoku_puzzle.is_solved():
         action_menu(sudoku_puzzle)
         sudoku_puzzle.print()
     print("Sudoku solved nice!")
-        
-    
+
+def build_sudoku_board(init_numbers):
+    sudoku_board = Sudoku_Board()
+    for coordinates in init_numbers:
+        sudoku_board.insert_number(*coordinates)
+    return sudoku_board
 
 
 def main():
     print("   Sudoku Solver v2.0")
     print("<<-------------------->>")
-    sudoku_puzzle = build_easy_sudoku_board()
+    sudoku_puzzle = build_sudoku_board(sudoku_games.board_two)
     print("repr: ",sudoku_puzzle)
     sudoku_puzzle.print()
     sudoku_puzzle.print(solved=True)
-    
+    sudoku_puzzle = build_sudoku_board(sudoku_games.board_three)
+    print("repr: ",sudoku_puzzle)
+    sudoku_puzzle.print()
+    sudoku_puzzle.print(solved=True)
 
 if __name__ == "__main__":
     main()
