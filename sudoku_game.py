@@ -1,7 +1,5 @@
 import sudoku
 
-
-
 def main():
     sudoku.puzzle()
 
